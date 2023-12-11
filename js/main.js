@@ -434,28 +434,33 @@ async function refreshPosts(postsData)
 //19
 async function selectMenuChangeEventHandler(event)
 {
-    if (!event) 
+    if(!event || !event.target)
     {
-        return undefined; // Return undefined if no event 
+        return undefined;
     }
-    const selectMenu = event.target;
 
-    if (!selectMenu)
+    try
     {
-        return undefined; // Return undefined if selectMenu is not found
-    }  
 
-    // Disable the select menu 
-    selectMenu.disabled = true;
+        event.target.disabled = true; 
+    
+        const userId = event.target.value || 1;
 
-    const userId = event.target.value || 1;
+        const posts = await getUserPosts(userId);
 
-  
-    // Enable the select menu after results
-    selectMenu.disabled = false;
+        const refreshPostsArray = await refreshPosts(posts);
 
-    // Return an array with userId, posts, and refreshPostsArray
-    return [userId, posts, refreshPostsArray];
+        event.target.disabled = false;
+
+        return [userId. posts, refreshPostsArray]
+    }
+    catch(error)
+    {
+        event.target.disabled = false;
+        
+        return undefined;
+    }
+    
 }
 
 //20
